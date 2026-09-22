@@ -62,6 +62,7 @@ func SetupRoutes(r *gin.Engine) {
 	//location history
 	r.POST("/v1/location/register", locationhistory.RegisterNewLocationHandler)
 	protected.GET("/locations/get", locationhistory.GetLocationsHandler)
+	protected.DELETE("/location/:id", locationhistory.DeleteLocationHandler)
 
 	//business
 	protected.POST("/business/create", business.CreateBusinessHandler)

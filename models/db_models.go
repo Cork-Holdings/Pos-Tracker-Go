@@ -10,7 +10,7 @@ import (
 
 type User struct {
 	ID        uuid.UUID `gorm:"type:uuid;primary_key"`
-	FullName  string    `gorm:"column:fullname;not null"`
+	FullName  string    `gorm:"not null"`
 	Email     string    `gorm:"unique;not null"`
 	Password  string    `gorm:"not null"`
 	RoleID    uuid.UUID `gorm:"not null"`
@@ -18,9 +18,12 @@ type User struct {
 	Status    string    `gorm:"default:active"`
 	Code      string    `gorm:"default:null"`
 	Enable2FA bool      `gorm:"default:false"`
+	// Phone and OtpCode are owned by the other application sharing this
+	// table. Declared only so inserts satisfy their NOT NULL constraints;
+	// this service does not read or write meaningful values to them.
+	Phone   string `gorm:"type:longtext;not null;default:(-)"`
+	OtpCode string `gorm:"column:otp_code;type:longtext;not null;default:(-)"`
 	gorm.Model
-	// UserID          uuid.UUID `gorm:"type:uuid;not null;unique"`
-	// User            User      `gorm:"foreignKey:UserID"`
 }
 
 type App struct {

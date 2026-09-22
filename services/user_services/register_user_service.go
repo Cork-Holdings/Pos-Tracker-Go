@@ -60,6 +60,8 @@ func RegisterUser(req *pb.RegisterRequest) *pb.AuthResponse {
 		Password: string(hashedPassword),
 		RoleID:   role.ID,
 		Status:   models.UserStatusActive,
+		Phone:    "",
+		OtpCode:  "",
 	}
 
 	tx := database.DB.Begin()

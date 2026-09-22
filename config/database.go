@@ -3,6 +3,7 @@ package database
 import (
 	"fmt"
 	"os"
+	"pos-master/migrations"
 	"pos-master/models"
 	"pos-master/seeders"
 
@@ -68,7 +69,6 @@ func InitDB() {
 
 		&models.Role{},       // Migrate `Role` first as `User` depends on it
 		&models.Permission{}, // Other independent tables can be migrated here
-		&models.User{},       // Now migrate `User` as `Role` exists
 		&models.TerminalType{},
 		&models.App{},
 		&models.AppVersion{},
@@ -80,6 +80,19 @@ func InitDB() {
 
 	if err != nil {
 		log.Fatalf("failed to migrate database: %v", err)
+	}
+
+	// users is a shared table. AutoMigrate it only when it does not exist so
+	// a fresh install still boots; on the live database we never mutate its
+	// schema except through versioned migrations.
+	if !DB.Migrator().HasTable(&models.User{}) {
+		if err := DB.AutoMigrate(&models.User{}); err != nil {
+			log.Fatalf("failed to create users table: %v", err)
+		}
+	}
+
+	if err := migrations.Run(DB); err != nil {
+		log.Fatalf("failed to run migrations: %v", err)
 	}
 
 	if err := seeders.SeedRoles(DB); err != nil {

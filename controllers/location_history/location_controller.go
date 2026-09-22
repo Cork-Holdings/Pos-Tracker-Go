@@ -75,3 +75,20 @@ func GetLocationsHandler(c *gin.Context) {
 	})
 
 }
+
+func DeleteLocationHandler(c *gin.Context) {
+	locationID := c.Param("id")
+
+	if locationID == "" {
+		utils.RespondWithError(c, 400, "location ID is required")
+		return
+	}
+
+	err := historyservices.DeleteLocationHistory(locationID)
+	if err != nil {
+		utils.RespondWithError(c, 400, fmt.Sprintf("error: %v", err))
+		return
+	}
+
+	utils.RespondWithSuccess(c, "successfully deleted location")
+}

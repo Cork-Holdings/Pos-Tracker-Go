@@ -23,7 +23,7 @@ func GetUsers(req *pb.GetUsersRequest) (*pb.GetUsersResponse, error) {
 
 	if search := strings.TrimSpace(req.SearchQuery); search != "" {
 		pattern := "%" + search + "%"
-		query = query.Where("fullname LIKE ? OR email LIKE ?", pattern, pattern)
+		query = query.Where("full_name LIKE ? OR email LIKE ?", pattern, pattern)
 	}
 
 	var totalUsers int64

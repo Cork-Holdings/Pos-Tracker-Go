@@ -22,17 +22,6 @@ func GetPosDevices(req *posPb.GetPosDevicesRequest) (*posPb.GetPosDevicesRespons
 
 	query := tx.Model(&models.PosDevice{})
 
-	var totalPosDevices int64
-	err := query.Count(&totalPosDevices).Error
-
-	if err != nil {
-		return nil, utils.CapitalizeError("failed to count pos device pos devices")
-	}
-
-	totalPages := int32((totalPosDevices + int64(req.PageSize) - 1) / int64(req.PageSize))
-	// Calculate offset for pagination
-	offset := (req.Page - 1) * req.PageSize
-
 	if req.BusinessId != "" {
 		query = query.Where("business_id = ?", req.BusinessId)
 	}
@@ -84,6 +73,17 @@ func GetPosDevices(req *posPb.GetPosDevicesRequest) (*posPb.GetPosDevicesRespons
 		}
 		query = query.Where("created_at <= ?", endDate)
 	}
+
+	var totalPosDevices int64
+	err := query.Count(&totalPosDevices).Error
+
+	if err != nil {
+		return nil, utils.CapitalizeError("failed to count pos device pos devices")
+	}
+
+	totalPages := int32((totalPosDevices + int64(req.PageSize) - 1) / int64(req.PageSize))
+	// Calculate offset for pagination
+	offset := (req.Page - 1) * req.PageSize
 
 	// Execute the final query with pagination and preloading
 	err = query.Order("created_at DESC").Limit(int(req.PageSize)).

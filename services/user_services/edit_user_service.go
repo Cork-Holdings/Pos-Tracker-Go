@@ -31,7 +31,7 @@ func EditUser(req *pb.EditUserRequest) error {
 	updates := map[string]interface{}{}
 
 	if fullname := strings.TrimSpace(req.Fullname); fullname != "" && fullname != currentUser.FullName {
-		updates["fullname"] = fullname
+		updates["full_name"] = fullname
 	}
 
 	if email := normalizeEmail(req.Email); email != "" && email != currentUser.Email {

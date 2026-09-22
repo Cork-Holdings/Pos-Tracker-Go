@@ -185,20 +185,20 @@ func CheckAppUpdate(c *gin.Context) {
 }
 
 func EditAppHandler(c *gin.Context) {
-	var req appPb.RegisterAppRequest
+	var req appPb.EditAppRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {
 		utils.RespondWithError(c, 400, fmt.Sprintf("error: %v", err))
 		return
 	}
 
-	err := appservices.RegisterApp(&req)
+	err := appservices.EditApp(&req)
 	if err != nil {
 		utils.RespondWithError(c, 400, fmt.Sprintf("error: %v", err))
 		return
 	}
 
-	utils.RespondWithSuccess(c, "App Registered successfully")
+	utils.RespondWithSuccess(c, "App updated successfully")
 
 }
 

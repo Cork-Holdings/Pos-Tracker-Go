@@ -48,6 +48,8 @@ func SeedAdminUser(db *gorm.DB) error {
 		Password: string(hashedPassword),
 		RoleID:   adminRole.ID,
 		Status:   models.UserStatusActive,
+		Phone:    "",
+		OtpCode:  "",
 	}
 
 	if err := tx.Create(&admin).Error; err != nil {

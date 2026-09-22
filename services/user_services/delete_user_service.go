@@ -52,7 +52,7 @@ func DeleteUser(userId string, requesterId string) error {
 		}
 	}()
 
-	if err := tx.Unscoped().Delete(&models.User{}, "id = ?", parsedID).Error; err != nil {
+	if err := tx.Delete(&models.User{}, "id = ?", parsedID).Error; err != nil {
 		tx.Rollback()
 		return utils.CapitalizeError("failed to delete user")
 	}
