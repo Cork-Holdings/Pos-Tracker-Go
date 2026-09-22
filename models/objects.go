@@ -1,5 +1,18 @@
 package models
 
+// Account status values stored in User.Status. Only UserStatusActive may log in.
+const (
+	UserStatusActive   = "active"
+	UserStatusInactive = "inactive"
+)
+
+// RoleAdmin is the role seeded by seeders.SeedRoles.
+const RoleAdmin = "admin"
+
+func IsValidUserStatus(status string) bool {
+	return status == UserStatusActive || status == UserStatusInactive
+}
+
 type PocketBaseAuthResponse struct {
 	Token  string                 `json:"token"`
 	Record map[string]interface{} `json:"record"`

@@ -42,7 +42,7 @@ func ResetPassword(req *pb.ResetPasswordRequest) error {
 	}
 
 	if req.Password != "" {
-		updates["password"] = hashedPassword
+		updates["password"] = string(hashedPassword)
 	}
 
 	tx := database.DB.Begin()

@@ -47,7 +47,7 @@ func SeedAdminUser(db *gorm.DB) error {
 		Email:    "luswepo17@gmail.com",
 		Password: string(hashedPassword),
 		RoleID:   adminRole.ID,
-		Status:   "active",
+		Status:   models.UserStatusActive,
 	}
 
 	if err := tx.Create(&admin).Error; err != nil {

@@ -19,7 +19,7 @@ import (
 
 func RegisterUser(req *pb.RegisterRequest) *pb.AuthResponse {
 	fullname := strings.TrimSpace(req.Fullname)
-	email := strings.TrimSpace(req.Email)
+	email := normalizeEmail(req.Email)
 	roleName := strings.TrimSpace(req.Role)
 
 	if fullname == "" {
@@ -59,6 +59,7 @@ func RegisterUser(req *pb.RegisterRequest) *pb.AuthResponse {
 		Email:    email,
 		Password: string(hashedPassword),
 		RoleID:   role.ID,
+		Status:   models.UserStatusActive,
 	}
 
 	tx := database.DB.Begin()
@@ -124,4 +125,10 @@ func isDuplicateKeyError(err error) bool {
 		return true
 	}
 	return strings.Contains(strings.ToLower(err.Error()), "duplicate")
+}
+
+// normalizeEmail keeps stored addresses in one canonical form, since login
+// matches on an exact string comparison.
+func normalizeEmail(email string) string {
+	return strings.ToLower(strings.TrimSpace(email))
 }

@@ -12,7 +12,7 @@ func SeedRoles(db *gorm.DB) error {
 	roles := []models.Role{
 		{
 			ID:   uuid.New(),
-			Name: "admin",
+			Name: models.RoleAdmin,
 		},
 	}
 

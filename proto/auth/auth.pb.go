@@ -315,6 +315,7 @@ type GetUsersResponse struct {
 	TotalPages    int32                  `protobuf:"varint,2,opt,name=totalPages,proto3" json:"totalPages,omitempty"`   // Total number of pages
 	CurrentPage   int32                  `protobuf:"varint,3,opt,name=currentPage,proto3" json:"currentPage,omitempty"` // Current page
 	HasMore       bool                   `protobuf:"varint,4,opt,name=hasMore,proto3" json:"hasMore,omitempty"`         // Whether there are more pages
+	Count         int32                  `protobuf:"varint,5,opt,name=count,proto3" json:"count,omitempty"`             // Total number of users
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -375,6 +376,13 @@ func (x *GetUsersResponse) GetHasMore() bool {
 		return x.HasMore
 	}
 	return false
+}
+
+func (x *GetUsersResponse) GetCount() int32 {
+	if x != nil {
+		return x.Count
+	}
+	return 0
 }
 
 type EditUserRequest struct {
@@ -630,6 +638,7 @@ type ChangeEmailOrPasswordRequest struct {
 	UserId            string                 `protobuf:"bytes,5,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
 	IsPasswordRequest bool                   `protobuf:"varint,6,opt,name=is_password_request,json=isPasswordRequest,proto3" json:"is_password_request,omitempty"`
 	IsEmailRequest    bool                   `protobuf:"varint,7,opt,name=is_email_request,json=isEmailRequest,proto3" json:"is_email_request,omitempty"`
+	OldPassword       string                 `protobuf:"bytes,8,opt,name=old_password,json=oldPassword,proto3" json:"old_password,omitempty"`
 	unknownFields     protoimpl.UnknownFields
 	sizeCache         protoimpl.SizeCache
 }
@@ -713,6 +722,13 @@ func (x *ChangeEmailOrPasswordRequest) GetIsEmailRequest() bool {
 	return false
 }
 
+func (x *ChangeEmailOrPasswordRequest) GetOldPassword() string {
+	if x != nil {
+		return x.OldPassword
+	}
+	return ""
+}
+
 var File_auth_proto protoreflect.FileDescriptor
 
 const file_auth_proto_rawDesc = "" +
@@ -740,7 +756,7 @@ const file_auth_proto_rawDesc = "" +
 	"\x0fGetUsersRequest\x12\x12\n" +
 	"\x04page\x18\x01 \x01(\x05R\x04page\x12\x1a\n" +
 	"\bpageSize\x18\x02 \x01(\x05R\bpageSize\x12 \n" +
-	"\vsearchQuery\x18\x03 \x01(\tR\vsearchQuery\"\x8e\x01\n" +
+	"\vsearchQuery\x18\x03 \x01(\tR\vsearchQuery\"\xa4\x01\n" +
 	"\x10GetUsersResponse\x12\x1e\n" +
 	"\x04user\x18\x01 \x03(\v2\n" +
 	".auth.UserR\x04user\x12\x1e\n" +
@@ -748,7 +764,8 @@ const file_auth_proto_rawDesc = "" +
 	"totalPages\x18\x02 \x01(\x05R\n" +
 	"totalPages\x12 \n" +
 	"\vcurrentPage\x18\x03 \x01(\x05R\vcurrentPage\x12\x18\n" +
-	"\ahasMore\x18\x04 \x01(\bR\ahasMore\"\x9b\x01\n" +
+	"\ahasMore\x18\x04 \x01(\bR\ahasMore\x12\x14\n" +
+	"\x05count\x18\x05 \x01(\x05R\x05count\"\x9b\x01\n" +
 	"\x0fEditUserRequest\x12\x1a\n" +
 	"\bfullname\x18\x01 \x01(\tR\bfullname\x12\x14\n" +
 	"\x05email\x18\x02 \x01(\tR\x05email\x12\x1a\n" +
@@ -768,7 +785,7 @@ const file_auth_proto_rawDesc = "" +
 	"\x02id\x18\x06 \x01(\tR\x02id\x12 \n" +
 	"\vpermissions\x18\a \x03(\tR\vpermissions\x12*\n" +
 	"\x10isFirstTimeLogin\x18\b \x01(\tR\x10isFirstTimeLogin\x12 \n" +
-	"\vtokenExpiry\x18\t \x01(\tR\vtokenExpiry\"\x99\x02\n" +
+	"\vtokenExpiry\x18\t \x01(\tR\vtokenExpiry\"\xbc\x02\n" +
 	"\x1cChangeEmailOrPasswordRequest\x12\x1b\n" +
 	"\told_email\x18\x01 \x01(\tR\boldEmail\x12\x1b\n" +
 	"\tnew_email\x18\x02 \x01(\tR\bnewEmail\x12)\n" +
@@ -776,7 +793,8 @@ const file_auth_proto_rawDesc = "" +
 	"\fnew_password\x18\x04 \x01(\tR\vnewPassword\x12\x17\n" +
 	"\auser_id\x18\x05 \x01(\tR\x06userId\x12.\n" +
 	"\x13is_password_request\x18\x06 \x01(\bR\x11isPasswordRequest\x12(\n" +
-	"\x10is_email_request\x18\a \x01(\bR\x0eisEmailRequestB\x12Z\x10/proto/auth;authb\x06proto3"
+	"\x10is_email_request\x18\a \x01(\bR\x0eisEmailRequest\x12!\n" +
+	"\fold_password\x18\b \x01(\tR\voldPasswordB\x12Z\x10/proto/auth;authb\x06proto3"
 
 var (
 	file_auth_proto_rawDescOnce sync.Once

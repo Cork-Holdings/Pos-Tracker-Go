@@ -45,6 +45,7 @@ message GetUsersResponse {
     int32 totalPages = 2;         // Total number of pages
     int32 currentPage = 3;        // Current page
     bool hasMore = 4;             // Whether there are more pages
+    int32 count = 5;              // Total number of users
   }
 
 message EditUserRequest {
@@ -87,4 +88,5 @@ message ChangeEmailOrPasswordRequest {
     string user_id =5;
     bool is_password_request =6;
     bool is_email_request =7;
+    string old_password =8;
 }

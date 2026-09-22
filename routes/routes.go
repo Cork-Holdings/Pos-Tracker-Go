@@ -27,6 +27,11 @@ func SetupRoutes(r *gin.Engine) {
 	protected.GET("/users/get", users.GetUsersHandler)
 	protected.POST("/user/update", users.EditUserHandler)
 	protected.GET("/user/get/:user_id", users.GetUserHandler)
+	protected.DELETE("/user/delete/:user_id", users.DeleteUserHandler)
+
+	//account self-service
+	protected.POST("/user/password/change", users.ChangePasswordHandler)
+	protected.POST("/user/email/change", users.ChangeEmailHandler)
 
 	//dashboard
 	protected.GET("/dashboard/tiles/get", dashboard.GetTileInfoHandler)

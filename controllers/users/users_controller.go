@@ -38,6 +38,10 @@ func GetUsersHandler(c *gin.Context) {
 		SearchQuery: searchQuery,
 	}
 
+	// Guards against a zero or negative pageSize, which would otherwise divide
+	// by zero while computing the page count.
+	getRequest.SetDefaults()
+
 	req := &auth.GetUsersRequest{
 		Page:        int32(getRequest.Page),
 		PageSize:    int32(getRequest.PageSize),
@@ -60,11 +64,8 @@ func GetUsersHandler(c *gin.Context) {
 
 func EditUserHandler(c *gin.Context) {
 	var req auth.EditUserRequest
-	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(400, gin.H{
-			"status":  "failure",
-			"message": "Invalid request format",
-		})
+	if err := utils.BindProtoJSON(c, &req); err != nil {
+		utils.RespondWithError(c, 400, "Invalid request format", fmt.Sprintf("error: %v", err))
 		return
 	}
 
@@ -92,5 +93,69 @@ func GetUserHandler(c *gin.Context) {
 	utils.RespondWithSuccess(c, "✅ user info retrieved", gin.H{
 		"data": user,
 	})
+
+}
+
+func DeleteUserHandler(c *gin.Context) {
+
+	userID := c.Param("user_id")
+
+	if userID == "" {
+		utils.RespondWithError(c, 400, "user ID is required")
+		return
+	}
+
+	err := userservices.DeleteUser(userID, c.GetString("userID"))
+
+	if err != nil {
+		utils.RespondWithError(c, 400, fmt.Sprintf("error: %v", err))
+		return
+	}
+
+	utils.RespondWithSuccess(c, "User deleted successfully")
+
+}
+
+func ChangePasswordHandler(c *gin.Context) {
+
+	var req auth.ChangeEmailOrPasswordRequest
+	if err := utils.BindProtoJSON(c, &req); err != nil {
+		utils.RespondWithError(c, 400, "Invalid request format", fmt.Sprintf("error: %v", err))
+		return
+	}
+
+	// The account being changed is always the caller's own, taken from the
+	// token rather than the body.
+	req.UserId = c.GetString("userID")
+	req.IsPasswordRequest = true
+	req.IsEmailRequest = false
+
+	if err := userservices.ChangeEmailorPassword(&req); err != nil {
+		utils.RespondWithError(c, 400, fmt.Sprintf("error: %v", err))
+		return
+	}
+
+	utils.RespondWithSuccess(c, "Password updated successfully")
+
+}
+
+func ChangeEmailHandler(c *gin.Context) {
+
+	var req auth.ChangeEmailOrPasswordRequest
+	if err := utils.BindProtoJSON(c, &req); err != nil {
+		utils.RespondWithError(c, 400, "Invalid request format", fmt.Sprintf("error: %v", err))
+		return
+	}
+
+	req.UserId = c.GetString("userID")
+	req.IsEmailRequest = true
+	req.IsPasswordRequest = false
+
+	if err := userservices.ChangeEmailorPassword(&req); err != nil {
+		utils.RespondWithError(c, 400, fmt.Sprintf("error: %v", err))
+		return
+	}
+
+	utils.RespondWithSuccess(c, "Email updated successfully")
 
 }
