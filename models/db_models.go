@@ -26,6 +26,17 @@ type User struct {
 	gorm.Model
 }
 
+// CreateUser inserts a user including empty Phone/OtpCode/Code so MariaDB
+// NOT NULL columns owned by the other app are satisfied. GORM otherwise
+// omits zero-value strings from INSERT.
+func CreateUser(tx *gorm.DB, user *User) error {
+	return tx.Select(
+		"ID", "FullName", "Email", "Password", "RoleID", "Status",
+		"Phone", "OtpCode", "Code", "Enable2FA",
+		"CreatedAt", "UpdatedAt",
+	).Create(user).Error
+}
+
 type App struct {
 	ID          uuid.UUID `gorm:"type:uuid;primary_key"`
 	Name        string    `gorm:"default:null"`

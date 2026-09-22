@@ -70,15 +70,14 @@ func RegisterUser(req *pb.RegisterRequest) *pb.AuthResponse {
 		return failureResponse(fmt.Sprintf("Unable to start transaction: %v", tx.Error))
 	}
 
-	result = tx.Create(&user)
-	if result.Error != nil {
+	if err := models.CreateUser(tx, &user); err != nil {
 		tx.Rollback()
-		if isDuplicateKeyError(result.Error) {
+		if isDuplicateKeyError(err) {
 			utils.Warn("create user failed", "reason", "duplicate email", "email", email)
 			return failureResponse("A user with this email already exists")
 		}
-		utils.Error("unable to register user", "email", email, "error", result.Error.Error())
-		return failureResponse(fmt.Sprintf("Unable to register user: %v", result.Error))
+		utils.Error("unable to register user", "email", email, "error", err.Error())
+		return failureResponse(fmt.Sprintf("Unable to register user: %v", err))
 	}
 
 	if err := tx.Commit().Error; err != nil {

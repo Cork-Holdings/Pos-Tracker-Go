@@ -52,7 +52,7 @@ func SeedAdminUser(db *gorm.DB) error {
 		OtpCode:  "",
 	}
 
-	if err := tx.Create(&admin).Error; err != nil {
+	if err := models.CreateUser(tx, &admin); err != nil {
 		tx.Rollback()
 		return err
 	}
